@@ -18,15 +18,17 @@ namespace Blog.Core.Extensions
         private static readonly ILog log = LogManager.GetLogger(typeof(AutofacModuleRegister));
         protected override void Load(ContainerBuilder builder)
         {
+            //程序集冲突解决程序用来探测程序集的基目录的文件路径（D:\偷偷学习\Blog.Core\Blog.Core.Api\bin\Debug\net5.0\）
             var basePath = AppContext.BaseDirectory;
             //builder.RegisterType<AdvertisementServices>().As<IAdvertisementServices>();
 
 
             #region 带有接口层的服务注入
-
+            //D:\偷偷学习\Blog.Core\Blog.Core.Api\bin\Debug\net5.0\Blog.Core.Services.dll
             var servicesDllFile = Path.Combine(basePath, "Blog.Core.Services.dll");
             var repositoryDllFile = Path.Combine(basePath, "Blog.Core.Repository.dll");
 
+            //判断是否存在路径，否者报错
             if (!(File.Exists(servicesDllFile) && File.Exists(repositoryDllFile)))
             {
                 var msg = "Repository.dll和service.dll 丢失，因为项目解耦了，所以需要先F6编译，再F5运行，请检查 bin 文件夹，并拷贝。";
@@ -40,21 +42,25 @@ namespace Blog.Core.Extensions
             var cacheType = new List<Type>();
             if (Appsettings.app(new string[] { "AppSettings", "RedisCachingAOP", "Enabled" }).ObjToBool())
             {
+                //RedisCachingAOP
                 builder.RegisterType<BlogRedisCacheAOP>();
                 cacheType.Add(typeof(BlogRedisCacheAOP));
             }
             if (Appsettings.app(new string[] { "AppSettings", "MemoryCachingAOP", "Enabled" }).ObjToBool())
             {
+                //MemoryCachingAOP
                 builder.RegisterType<BlogCacheAOP>();
                 cacheType.Add(typeof(BlogCacheAOP));
             }
             if (Appsettings.app(new string[] { "AppSettings", "TranAOP", "Enabled" }).ObjToBool())
             {
+                //TranAOP
                 builder.RegisterType<BlogTranAOP>();
                 cacheType.Add(typeof(BlogTranAOP));
             }
             if (Appsettings.app(new string[] { "AppSettings", "LogAOP", "Enabled" }).ObjToBool())
             {
+                //LogAOP
                 builder.RegisterType<BlogLogAOP>();
                 cacheType.Add(typeof(BlogLogAOP));
             }
