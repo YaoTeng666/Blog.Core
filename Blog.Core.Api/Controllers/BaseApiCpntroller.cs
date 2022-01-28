@@ -51,7 +51,7 @@ namespace Blog.Core.Controllers
         [NonAction]
         public MessageModel<PageModel<T>> SuccessPage<T>(int page, int dataCount, List<T> data, int pageCount, string msg = "获取成功")
         {
-
+            //提交
             return new MessageModel<PageModel<T>>()
             {
                 success = true,
